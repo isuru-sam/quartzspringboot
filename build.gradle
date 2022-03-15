@@ -1,0 +1,30 @@
+plugins {
+	id 'org.springframework.boot' version '2.6.4'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+}
+
+group = 'com.udemy'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-quartz'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web
+implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok:1.18.4'
+    annotationProcessor 'org.projectlombok:lombok:1.18.4'
+   // https://mvnrepository.com/artifact/org.postgresql/postgresql
+implementation group: 'org.postgresql', name: 'postgresql', version: '42.3.3'
+implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
+
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
