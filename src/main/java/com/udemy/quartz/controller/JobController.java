@@ -1,16 +1,21 @@
 package com.udemy.quartz.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerMetaData;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.udemy.quartz.entity.Item;
+import com.udemy.quartz.entity.Person;
 import com.udemy.quartz.entity.SchedulerJobInfo;
 import com.udemy.quartz.job.SimpleJob;
+import com.udemy.quartz.service.PersonService;
 import com.udemy.quartz.service.SchedulerJobService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,7 +28,8 @@ import lombok.extern.slf4j.Slf4j;
 public class JobController {
 
 	private final SchedulerJobService scheduleJobService;
-	
+	@Autowired
+	private PersonService personService;
 	
 	@PostMapping(path = "/schedule")
 	public void schdulejob() {
@@ -40,6 +46,37 @@ public class JobController {
 		
 	}
 	
+	@PostMapping(path = "/addperson")
+	public void addPerson() {
+		Person p =new Person();
+		p.setName("Isuru");
+		p.setSurname("Sam");
+		p.setAge(100);
+		personService.addPerson(p);
+	}
+	
+	@PostMapping(path = "/addpersonitems")
+	public void addPersonItems() {
+		Person p =new Person();
+		p.setName("Isuru");
+		p.setSurname("Sam");
+		p.setAge(100);
+		List<Item> items=new ArrayList<>();
+		Item i=new Item();
+		//i.setId(1);
+		i.setItem_code("abc");
+		i.setPerson(p);
+		
+		Item i1=new Item();
+		//i1.setId(1);
+		//i1.setPerson(person);
+		i1.setItem_code("def");
+		i1.setPerson(p);
+		items.add(i);
+		items.add(i1);
+		p.setItems(items);
+		personService.addPerson(p);
+	}
 	
 
 	/*@RequestMapping(value = "/saveOrUpdate", method = { RequestMethod.GET, RequestMethod.POST })
