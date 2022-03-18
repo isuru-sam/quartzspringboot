@@ -107,7 +107,7 @@ public class JobController {
 		
 		Course cs=new Course();
 		cs.setName("Maths");
-		
+		cs.setId(25);
 		List<CourseRegistration> crlist=new ArrayList<>();
 		CourseRegistration c=new CourseRegistration();
 		c.setGrade(56);

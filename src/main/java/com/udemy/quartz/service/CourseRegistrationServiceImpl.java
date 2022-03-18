@@ -11,6 +11,7 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService{
 	CourseRegistrationRepository courseRegistrationRepository;
 	@Override
 	public void addCourseRegistration(CourseRegistration c) {
+		
 		// TODO Auto-generated method stub
 		courseRegistrationRepository.save(c);
 	}
