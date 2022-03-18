@@ -1,5 +1,6 @@
 package com.udemy.quartz.controller;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,16 +12,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.udemy.quartz.entity.Course;
+import com.udemy.quartz.entity.CourseRegistration;
 import com.udemy.quartz.entity.Item;
 import com.udemy.quartz.entity.Person;
 import com.udemy.quartz.entity.SchedulerJobInfo;
 import com.udemy.quartz.job.SimpleJob;
+import com.udemy.quartz.service.CourseRegistrationService;
 import com.udemy.quartz.service.PersonService;
 import com.udemy.quartz.service.SchedulerJobService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
+//codejava.net/frameworks/hibernate/hibernate-many-to-many-association-with-extra-columns-in-join-table-example
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -30,7 +34,8 @@ public class JobController {
 	private final SchedulerJobService scheduleJobService;
 	@Autowired
 	private PersonService personService;
-	
+	@Autowired
+	private CourseRegistrationService courseRegistrationService;
 	@PostMapping(path = "/schedule")
 	public void schdulejob() {
 		SchedulerJobInfo j=new SchedulerJobInfo();
@@ -76,6 +81,52 @@ public class JobController {
 		items.add(i1);
 		p.setItems(items);
 		personService.addPerson(p);
+	}
+	
+	
+	@PostMapping(path = "/addpersoncourse")
+	public void addPersoncourse() {
+		Person p =new Person();
+		p.setName("Isuru");
+		p.setSurname("Sam");
+		p.setAge(100);
+		List<Item> items=new ArrayList<>();
+		Item i=new Item();
+		//i.setId(1);
+		i.setItem_code("abc");
+		i.setPerson(p);
+		
+		Item i1=new Item();
+		//i1.setId(1);
+		//i1.setPerson(person);
+		i1.setItem_code("def");
+		i1.setPerson(p);
+		items.add(i);
+		items.add(i1);
+		p.setItems(items);
+		
+		Course cs=new Course();
+		cs.setName("Maths");
+		
+		List<CourseRegistration> crlist=new ArrayList<>();
+		CourseRegistration c=new CourseRegistration();
+		c.setGrade(56);
+		c.setRegisteredAt(LocalDateTime.now());
+		c.setPerson(p);
+		c.setCourse(cs);
+		
+		
+		CourseRegistration c1=new CourseRegistration();
+		c1.setGrade(516);
+		c1.setRegisteredAt(LocalDateTime.now());
+		c1.setPerson(p);
+		c1.setCourse(cs);
+		
+		cs.setRegistrations(crlist);
+		
+		p.setRegistrations(crlist);
+		courseRegistrationService.addCourseRegistration(c1);
+		//personService.addPerson(p);
 	}
 	
 
