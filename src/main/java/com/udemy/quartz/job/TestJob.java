@@ -4,6 +4,7 @@ import java.util.stream.IntStream;
 
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.quartz.JobKey;
 import org.quartz.SchedulerException;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
@@ -21,8 +22,13 @@ public class TestJob
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-	        
-	        IntStream.range(0, 5).forEach(i -> {
+	        JobKey jk=context.getJobDetail().getKey();
+	        log.info("group"+ jk.getGroup());
+	        log.info("name"+ jk.getName());
+	       Object o= context.getJobDetail().getJobDataMap().get(jk.getName()+jk.getGroup());
+	       
+log.info((String)o);
+IntStream.range(0, 5).forEach(i -> {
 	            log.info("Counting - {}", i);
 	            try {
 	                Thread.sleep(1000);

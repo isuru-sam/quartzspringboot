@@ -7,6 +7,7 @@ import java.util.List;
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerMetaData;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,6 +19,7 @@ import com.udemy.quartz.entity.Item;
 import com.udemy.quartz.entity.Person;
 import com.udemy.quartz.entity.SchedulerJobInfo;
 import com.udemy.quartz.job.SimpleJob;
+import com.udemy.quartz.job.TestJob;
 import com.udemy.quartz.service.CourseRegistrationService;
 import com.udemy.quartz.service.PersonService;
 import com.udemy.quartz.service.SchedulerJobService;
@@ -36,11 +38,19 @@ public class JobController {
 	private PersonService personService;
 	@Autowired
 	private CourseRegistrationService courseRegistrationService;
+	
+	
+	@GetMapping(path = "/hello")
+	public String hello() {
+	return "hello";
+	}
+	
+	
 	@PostMapping(path = "/schedule")
 	public void schdulejob() {
 		SchedulerJobInfo j=new SchedulerJobInfo();
 		j.setCronJob(false);
-		j.setJobClass(SimpleJob.class.getName());
+		j.setJobClass(TestJob.class.getName());
 		j.setJobGroup("test");
 		j.setJobId("1");
 		j.setJobName("TestJob");
