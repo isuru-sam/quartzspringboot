@@ -42,6 +42,8 @@ public class JobController {
 	
 	@GetMapping(path = "/hello")
 	public String hello() {
+		log.debug("Debug");
+		log.info("Hello");
 	return "hello";
 	}
 	
