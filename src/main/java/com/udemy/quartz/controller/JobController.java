@@ -7,8 +7,15 @@ import java.util.List;
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerMetaData;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,9 +27,14 @@ import com.udemy.quartz.entity.Person;
 import com.udemy.quartz.entity.SchedulerJobInfo;
 import com.udemy.quartz.job.SimpleJob;
 import com.udemy.quartz.job.TestJob;
+import com.udemy.quartz.model.AuthenticationRequest;
+import com.udemy.quartz.model.AuthenticationResponse;
+import com.udemy.quartz.service.AppUserDetailsService;
 import com.udemy.quartz.service.CourseRegistrationService;
+import com.udemy.quartz.service.JWUtil;
 import com.udemy.quartz.service.PersonService;
 import com.udemy.quartz.service.SchedulerJobService;
+
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +50,15 @@ public class JobController {
 	private PersonService personService;
 	@Autowired
 	private CourseRegistrationService courseRegistrationService;
-	
+	@Autowired
+	private AuthenticationManager authenticationManager;
+
+	@Autowired
+	private JWUtil jwtTokenUtil;
+
+	@Autowired
+	private AppUserDetailsService userDetailsService;
+
 	
 	@GetMapping(path = "/hello")
 	public String hello() {
@@ -140,7 +160,27 @@ public class JobController {
 		courseRegistrationService.addCourseRegistration(c1);
 		//personService.addPerson(p);
 	}
-	
+	@RequestMapping(value = "/authenticate", method = RequestMethod.POST)
+	public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+
+		try {
+		Authentication auth=	authenticationManager.authenticate(
+					new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
+			);
+		}
+		catch (BadCredentialsException e) {
+			throw new Exception("Incorrect username or password", e);
+		}
+
+
+		final UserDetails userDetails = userDetailsService
+				.loadUserByUsername(authenticationRequest.getUsername());
+
+		final String jwt = jwtTokenUtil.generateToken(userDetails);
+
+		return ResponseEntity.ok(new AuthenticationResponse(jwt));
+	}
+
 
 	/*@RequestMapping(value = "/saveOrUpdate", method = { RequestMethod.GET, RequestMethod.POST })
 	public Object saveOrUpdate(SchedulerJobInfo job) {
